@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ModeleCamp.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="ModeleCampStoreContainer">
+    <EntitySet Name="TCamps" EntityType="ModeleCamp.Store.TCamps" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TJeunes" EntityType="ModeleCamp.Store.TJeunes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CampJeune" EntityType="ModeleCamp.Store.CampJeune" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_CampJeune_Camp" Association="ModeleCamp.Store.FK_CampJeune_Camp">
+      <End Role="Camp" EntitySet="TCamps" />
+      <End Role="CampJeune" EntitySet="CampJeune" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CampJeune_Jeune" Association="ModeleCamp.Store.FK_CampJeune_Jeune">
+      <End Role="Jeune" EntitySet="TJeunes" />
+      <End Role="CampJeune" EntitySet="CampJeune" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="TCamps">
+    <Key>
+      <PropertyRef Name="oidCamp" />
+    </Key>
+    <Property Name="oidCamp" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Titre" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AgeRequis" Type="int" Nullable="false" />
+    <Property Name="NiveauRequis" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TJeunes">
+    <Key>
+      <PropertyRef Name="oidJeune" />
+    </Key>
+    <Property Name="oidJeune" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nom" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NiveauComplete" Type="int" Nullable="false" />
+    <Property Name="AgeCourant" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CampJeune">
+    <Key>
+      <PropertyRef Name="HistoriqueCamps_oidCamp" />
+      <PropertyRef Name="CampJeune_Camp_oidJeune" />
+    </Key>
+    <Property Name="HistoriqueCamps_oidCamp" Type="int" Nullable="false" />
+    <Property Name="CampJeune_Camp_oidJeune" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_CampJeune_Camp">
+    <End Role="Camp" Type="ModeleCamp.Store.TCamps" Multiplicity="1" />
+    <End Role="CampJeune" Type="ModeleCamp.Store.CampJeune" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Camp">
+        <PropertyRef Name="oidCamp" />
+      </Principal>
+      <Dependent Role="CampJeune">
+        <PropertyRef Name="HistoriqueCamps_oidCamp" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CampJeune_Jeune">
+    <End Role="CampJeune" Type="ModeleCamp.Store.CampJeune" Multiplicity="*" />
+    <End Role="Jeune" Type="ModeleCamp.Store.TJeunes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Jeune">
+        <PropertyRef Name="oidJeune" />
+      </Principal>
+      <Dependent Role="CampJeune">
+        <PropertyRef Name="CampJeune_Camp_oidJeune" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModeleCamp" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ModeleCampContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TCamps" EntityType="ModeleCamp.Camp" />
+          <EntitySet Name="TJeunes" EntityType="ModeleCamp.Jeune" />
+          <AssociationSet Name="CampJeune" Association="ModeleCamp.CampJeune">
+            <End Role="Camp" EntitySet="TCamps" />
+            <End Role="Jeune" EntitySet="TJeunes" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Camp">
+          <Key>
+            <PropertyRef Name="oidCamp" />
+          </Key>
+          <Property Name="oidCamp" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Titre" Type="String" Nullable="false" />
+          <Property Name="AgeRequis" Type="Int32" Nullable="false" />
+          <Property Name="NiveauRequis" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Jeune">
+          <Key>
+            <PropertyRef Name="oidJeune" />
+          </Key>
+          <Property Name="oidJeune" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nom" Type="String" Nullable="false" />
+          <Property Name="NiveauComplete" Type="Int32" Nullable="false" />
+          <Property Name="AgeCourant" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HistoriqueCamps" Relationship="ModeleCamp.CampJeune" FromRole="Jeune" ToRole="Camp" />
+        </EntityType>
+        <Association Name="CampJeune">
+          <End Type="ModeleCamp.Camp" Role="Camp" Multiplicity="*" />
+          <End Type="ModeleCamp.Jeune" Role="Jeune" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ModeleCampStoreContainer" CdmEntityContainer="ModeleCampContainer">
+    <EntitySetMapping Name="TCamps">
+      <EntityTypeMapping TypeName="IsTypeOf(ModeleCamp.Camp)">
+        <MappingFragment StoreEntitySet="TCamps">
+          <ScalarProperty Name="oidCamp" ColumnName="oidCamp" />
+          <ScalarProperty Name="Titre" ColumnName="Titre" />
+          <ScalarProperty Name="AgeRequis" ColumnName="AgeRequis" />
+          <ScalarProperty Name="NiveauRequis" ColumnName="NiveauRequis" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TJeunes">
+      <EntityTypeMapping TypeName="IsTypeOf(ModeleCamp.Jeune)">
+        <MappingFragment StoreEntitySet="TJeunes">
+          <ScalarProperty Name="oidJeune" ColumnName="oidJeune" />
+          <ScalarProperty Name="Nom" ColumnName="Nom" />
+          <ScalarProperty Name="NiveauComplete" ColumnName="NiveauComplete" />
+          <ScalarProperty Name="AgeCourant" ColumnName="AgeCourant" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="CampJeune" TypeName="ModeleCamp.CampJeune" StoreEntitySet="CampJeune">
+      <EndProperty Name="Camp">
+        <ScalarProperty Name="oidCamp" ColumnName="HistoriqueCamps_oidCamp" />
+      </EndProperty>
+      <EndProperty Name="Jeune">
+        <ScalarProperty Name="oidJeune" ColumnName="CampJeune_Camp_oidJeune" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Aucun" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
